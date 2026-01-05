@@ -2,7 +2,7 @@
 // @name         💯【超星学习通满分助手-AI版】
 // @namespace    askAuto
 // @author       Linzx1314(原作者: shushoujiu)
-// @version      2.2.1
+// @version      2.2.6
 // @description  💯超星学习通满分助手AI版，挂机解放时间，无需任何操作自动完成所有任务点。支持本地AI回答所有题型，包括简答题、名词解释、论述题、计算题等。
 // @icon         https://vitejs.dev/logo.svg
 // @match        *://*.chaoxing.com/*
@@ -55,7 +55,7 @@
   const getConfig = () => {
     const config = _GM_getValue("config");
     return config || defaultConfig$1;
-  }, defaultConfig$1 = { debugger: false, autoAnswer: true, autoVideo: true, autoJump: true, autoSubmit: true, gptUrl: "http://127.0.0.1:1234/v1/chat/completions", gptKey: "lm-studio", gptModel: "local-model", gpt: true, gptType: ["0", "1", "2", "3", "4", "5", "6", "7"], interval: 3, answerInterval: 3, minAccuracy: 0.8, autoExam: true, hideExam: false, notice: "本脚本仅供学习交流使用，严禁用于商业用途，否则后果自负！" }, userConfig = [{ name: "base", label: "基础配置", config: [{ name: "interval", label: "通用间隔(秒)", type: "number", value: defaultConfig$1.interval, desc: "通用间隔，用于脚本运行切换" }, { name: "answerInterval", label: "答题间隔(秒)", type: "number", value: defaultConfig$1.answerInterval, desc: "控制答题速度" }, { name: "gptUrl", label: "AI API地址", type: "input", value: defaultConfig$1.gptUrl, desc: "LM Studio本地API地址，默认http://127.0.0.1:1234/v1/chat/completions" }, { name: "gptKey", label: "API Key", type: "input", value: defaultConfig$1.gptKey, desc: "LM Studio通常不需要Key，填写任意值即可" }, { name: "gptModel", label: "模型名称", type: "input", value: defaultConfig$1.gptModel, desc: "根据实际模型填写" }, { name: "gpt", label: "启用AI答题", type: "switch", value: defaultConfig$1.gpt, desc: "开启后，所有题型将使用AI作答" }, { name: "gptType", label: "AI答题类型", type: "checkbox", value: defaultConfig$1.gptType, options: [{ label: "单选题", value: "0" }, { label: "多选题", value: "1" }, { label: "填空题", value: "2" }, { label: "判断题", value: "3" }, { label: "简答题", value: "4" }, { label: "名词解释", value: "5" }, { label: "论述题", value: "6" }, { label: "计算题", value: "7" }], desc: "选择哪些题目类型使用AI回答" }, { name: "autoExam", label: "考试自动切换", type: "switch", value: defaultConfig$1.autoExam, desc: "开启后，考试会自动切换下一题" }] }, { name: "chapter", label: "章节配置", config: [{ name: "autoAnswer", label: "自动答题", type: "switch", value: defaultConfig$1.autoAnswer, desc: "开启后，会自动答题" }, { name: "autoVideo", label: "自动视频", type: "switch", value: defaultConfig$1.autoVideo, desc: "开启后，会自动观看视频" }, { name: "autoJump", label: "自动切换", type: "switch", value: defaultConfig$1.autoVideo, desc: "开启后，会自动切换章节" }, { name: "autoSubmit", label: "自动提交", type: "switch", value: defaultConfig$1.autoSubmit, desc: "开启后，会自动提交答案" }, { name: "minAccuracy", label: "最低正确率", type: "input", value: defaultConfig$1.minAccuracy, desc: "不满足最低正确率则不会自动提交答案" }] }], useformStore = pinia$1.defineStore({
+  }, defaultConfig$1 = { debugger: false, autoAnswer: true, autoVideo: true, autoJump: true, autoSubmit: true, gptUrl: "http://127.0.0.1:1234/v1/chat/completions", gptKey: "lm-studio", gptModel: "local-model", gptTimeout: 60, gpt: true, gptType: ["0", "1", "2", "3", "4", "5", "6", "7"], interval: 3, answerInterval: 3, minAccuracy: 0.8, autoExam: true, hideExam: false, notice: "本脚本仅供学习交流使用，严禁用于商业用途，否则后果自负！" }, userConfig = [{ name: "base", label: "基础配置", config: [{ name: "interval", label: "通用间隔(秒)", type: "number", value: defaultConfig$1.interval, desc: "通用间隔，用于脚本运行切换" }, { name: "answerInterval", label: "答题间隔(秒)", type: "number", value: defaultConfig$1.answerInterval, desc: "控制答题速度" }, { name: "gptUrl", label: "AI API地址", type: "input", value: defaultConfig$1.gptUrl, desc: "LM Studio本地API地址，默认http://127.0.0.1:1234/v1/chat/completions" }, { name: "gptKey", label: "API Key", type: "input", value: defaultConfig$1.gptKey, desc: "LM Studio通常不需要Key，填写任意值即可" }, { name: "gptModel", label: "模型名称", type: "input", value: defaultConfig$1.gptModel, desc: "根据实际模型填写" }, { name: "gptTimeout", label: "AI超时(秒)", type: "number", value: defaultConfig$1.gptTimeout, desc: "AI答题超时时间，建议60秒以上" }, { name: "gpt", label: "启用AI答题", type: "switch", value: defaultConfig$1.gpt, desc: "开启后，所有题型将使用AI作答" }, { name: "gptType", label: "AI答题类型", type: "checkbox", value: defaultConfig$1.gptType, options: [{ label: "单选题", value: "0" }, { label: "多选题", value: "1" }, { label: "填空题", value: "2" }, { label: "判断题", value: "3" }, { label: "简答题", value: "4" }, { label: "名词解释", value: "5" }, { label: "论述题", value: "6" }, { label: "计算题", value: "7" }], desc: "选择哪些题目类型使用AI回答" }, { name: "autoExam", label: "考试自动切换", type: "switch", value: defaultConfig$1.autoExam, desc: "开启后，考试会自动切换下一题" }] }, { name: "chapter", label: "章节配置", config: [{ name: "autoAnswer", label: "自动答题", type: "switch", value: defaultConfig$1.autoAnswer, desc: "开启后，会自动答题" }, { name: "autoVideo", label: "自动视频", type: "switch", value: defaultConfig$1.autoVideo, desc: "开启后，会自动观看视频" }, { name: "autoJump", label: "自动切换", type: "switch", value: defaultConfig$1.autoVideo, desc: "开启后，会自动切换章节" }, { name: "autoSubmit", label: "自动提交", type: "switch", value: defaultConfig$1.autoSubmit, desc: "开启后，会自动提交答案" }, { name: "minAccuracy", label: "最低正确率", type: "input", value: defaultConfig$1.minAccuracy, desc: "不满足最低正确率则不会自动提交答案" }] }], useformStore = pinia$1.defineStore({
     id: "formstore", state: () => ({ forminput: getConfig(), dialogV: false, activeName: "base" }), actions: {
       saveConfig(forminput) {
         _GM_setValue("config", forminput);
@@ -134,77 +134,24 @@
       }
       const typeNames = { "0": "单选题", "1": "多选题", "2": "填空题", "3": "判断题", "4": "简答题", "5": "名词解释", "6": "论述题", "7": "计算题" };
       const typeName = typeNames[questionData.type] || "题目";
-      let prompt = "";
-      if (questionData.type === "0") {
-        prompt = `你是一个答题助手。请回答以下单选题。
-
-【重要要求】
-1. 只输出正确选项的字母，如：A 或 B 或 C 或 D
-2. 不要输出选项内容，只输出单个大写字母
-3. 不要添加任何解释、标点符号或其他文字
+      let prompt = `请直接回答这道${typeName}。
 
 【题目】
 ${questionData.question}
+${questionData.options ? "\n【选项】\n" + questionData.options.map((opt, i) => String.fromCharCode(65 + i) + ". " + opt).join("\n") : ""}
 
-【选项】
-${questionData.options ? questionData.options.map((opt, i) => String.fromCharCode(65 + i) + ". " + opt).join("\n") : ""}
-
-【答案】（只输出一个字母，如A）`;
-      } else if (questionData.type === "1") {
-        prompt = `你是一个答题助手。请回答以下多选题。
-
-【重要要求】
-1. 输出所有正确选项的字母，多个字母用英文逗号分隔
-2. 只输出大写字母，如：A,B 或 A,C,D
-3. 不要输出选项内容，不要添加任何解释
-
-【题目】
-${questionData.question}
-
-【选项】
-${questionData.options ? questionData.options.map((opt, i) => String.fromCharCode(65 + i) + ". " + opt).join("\n") : ""}
-
-【答案】（如：A,B,C）`;
-      } else if (questionData.type === "2") {
-        prompt = `你是一个答题助手。请回答以下填空题。
-
-【重要要求】
-1. 识别题目中的所有填空位置
-2. 按顺序给出每个空的答案，用英文逗号分隔
-3. 答案要简洁准确，不要冗余
-4. 不要添加任何解释说明
-
-【题目】
-${questionData.question}
-
-【答案】（如：答案1,答案2,答案3）`;
-      } else if (questionData.type === "3") {
-        prompt = `你是一个答题助手。请判断以下陈述的对错。
-
-【重要要求】
-1. 只能回答"正确"或"错误"中的一个
-2. 不要添加任何解释或其他文字
-3. 确保回答简洁明确
-
-【题目】
-${questionData.question}
+【要求】
+${(() => {
+          switch (questionData.type) {
+            case "0": return "单选题，只输出一个字母（如A）";
+            case "1": return "多选题，输出所有正确字母，用逗号分隔（如A,B,C）";
+            case "2": return "填空题，多个答案用逗号分隔";
+            case "3": return "判断题，只回答\"正确\"或\"错误\"";
+            default: return "答案简洁，多个要点用逗号分隔";
+          }
+        })()}
 
 【答案】`;
-      } else {
-        prompt = `你是一个答题助手。请回答以下${typeName}。
-
-【重要要求】
-1. 答案要简明扼要，抓住要点
-2. 如果有多个问题或要点，用英文逗号分隔
-3. 避免冗长解释，直接给出核心答案
-4. 保持条理清晰
-
-【题目】
-${questionData.question}
-${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" + questionData.options.map((opt, i) => String.fromCharCode(65 + i) + ". " + opt).join("\n") : ""}
-
-【答案】`;
-      }
       return new Promise((resolve) => {
         const requestData = {
           model: defaultConfig.gptModel || "local-model",
@@ -223,29 +170,55 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
           url: defaultConfig.gptUrl || "http://127.0.0.1:1234/v1/chat/completions",
           data: JSON.stringify(requestData),
           headers: headers,
-          timeout: 30000,
+          timeout: (defaultConfig.gptTimeout || 60) * 1000,
           onload: (res) => {
             try {
+              // 检查HTTP状态码
+              if (res.status !== 200) {
+                console.error(`GPT API HTTP error: ${res.status}`, res.responseText);
+                // 尝试解析错误信息
+                let errorMsg = `API错误(${res.status})`;
+                try {
+                  const errorData = JSON.parse(res.responseText);
+                  if (errorData.error?.message) {
+                    errorMsg = errorData.error.message;
+                  } else if (errorData.error?.code) {
+                    errorMsg = `API错误(${errorData.error.code})`;
+                  }
+                } catch (e) {
+                  // 无法解析错误信息，使用默认
+                }
+                // 将错误信息放到 answer 字段，这样前端会显示错误而不是"暂无答案"
+                resolve({ form: "AI", answer: errorMsg, error: true });
+                return;
+              }
+
               const data = JSON.parse(res.responseText);
               if (data.choices && data.choices.length > 0) {
                 let answer = data.choices[0].message.content.trim();
                 answer = answer.replace(/^```[\s\S]*?\n/, "").replace(/\n```$/, "");
 
-                // 处理单选题和多选题的字母答案 (A,B,C -> 选项内容)
+                // 处理单选题和多选题的字母答案
                 if (questionData.type === "0" || questionData.type === "1") {
-                  // 将字母转换为选项内容
                   const letterToIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7 };
                   const letters = answer.split(/[,\n]+/).map(a => a.trim().toUpperCase()).filter(a => a);
-                  const selectedOptions = letters
-                    .map(letter => letterToIndex[letter])
-                    .filter(index => index !== undefined && questionData.options && questionData.options[index])
-                    .map(index => questionData.options[index]);
-                  answer = selectedOptions.join(",");
+                  if (questionData.type === "0") {
+                    // 单选题：转成选项内容字符串
+                    const validLetters = letters.filter(l => letterToIndex[l] !== undefined && questionData.options && questionData.options[letterToIndex[l]]);
+                    if (validLetters.length > 0) {
+                      answer = questionData.options[letterToIndex[validLetters[0]]] || "";
+                    } else {
+                      answer = "";
+                    }
+                  } else {
+                    // 多选题：直接保存字母数组，避免选项内容含逗号导致匹配错误
+                    answer = letters.filter(l => letterToIndex[l] !== undefined && questionData.options && questionData.options[letterToIndex[l]]);
+                  }
 
-                  // 如果没有匹配到选项，回退到原答案
-                  if (!answer) {
+                  // 如果没有匹配到选项
+                  if (questionData.type === "0" && !answer || questionData.type === "1" && answer.length === 0) {
                     answer = data.choices[0].message.content.trim();
-                    answer = answer.split(/[,\n]+/).map(a => a.trim()).filter(a => a).join(",");
+                    answer = questionData.type === "1" ? answer.split(/[,\n]+/).map(a => a.trim()).filter(a => a) : answer;
                   }
                 } else if (questionData.type === "2") {
                   const parts = answer.split(/[,\n]+/).filter(p => p.trim());
@@ -276,11 +249,11 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
           },
           ontimeout: () => {
             console.error("GPT API timeout");
-            resolve({ form: "AI", answer: "" });
+            resolve({ form: "AI", answer: "请求超时", error: true });
           },
           onerror: (err) => {
             console.error("GPT API error:", err);
-            resolve({ form: "AI", answer: "" });
+            resolve({ form: "AI", answer: "网络错误", error: true });
           }
         });
       });
@@ -1492,7 +1465,14 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
     const promises = [server.getAnswerGpt(questionData)];
     return Promise.all(promises);
   }, fillAnswer = (answer, questionData, html, iframeWindow) => {
-    answer = answer.filter((item) => item.answer.length > 0), console.log(answer);
+    console.log(answer);
+    // 检查是否有API错误
+    for (let i = 0; i < answer.length; i++) {
+      if (answer[i].error) {
+        return { error: answer[i].error };
+      }
+    }
+    answer = answer.filter((item) => item.answer.length > 0);
     for (let i = 0; i < answer.length; i++) {
       if ("string" == typeof answer[i].answer) {
         if (-1 !== answer[i].answer.indexOf("付费题库") || -1 !== answer[i].answer.indexOf("暂无答案") || "略" == answer[i].answer)
@@ -1513,7 +1493,7 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
     switch (questionData.type) {
       case "0":
       case "1":
-        const matchArr = matchAnswer(answer, questionData.options);
+        const matchArr = matchAnswer(answer, questionData.options, questionData.type);
         matchArr.length > 0 && clearCurrent(html, iframeWindow);
         for (var i = 0; i < matchArr.length; i++)
           console.log($$1(html).find("li").eq(matchArr[i]), matchArr[i]), $$1(html).find("ul:eq(0) li :radio,:checkbox,textarea").eq(matchArr[i]).click(), $$1(html).find(".answerBg").eq(matchArr[i]).click(), $$1(html).find("li").eq(matchArr[i]).click();
@@ -1538,14 +1518,15 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
       default:
         return false;
     }
-  }, matchAnswer = (answer, options) => {
+  }, matchAnswer = (answer, options, questionType) => {
+    const letterToIndex = { 'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7 };
     answer = ((answer2) => {
       if (answer2 instanceof Array) {
         answer2 = answer2.filter(function (item) {
           return null !== item;
         });
         for (let i2 = 0; i2 < answer2.length; i2++)
-          answer2[i2] = removeHtml(answer2[i2]);
+          answer2[i2] = removeHtml(String(answer2[i2]));
       } else if ("string" == typeof answer2) {
         answer2 = cl(answer2);
         // 将逗号分隔的字符串拆分成数组（用于多选题）
@@ -1553,9 +1534,22 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
       }
       return answer2;
     })(answer);
-    for (var matchArr = [], i = 0; i < answer.length; i++)
-      for (var j = 0; j < options.length; j++)
-        answer[i] == options[j] && matchArr.push(j);
+    var matchArr = [];
+    for (var i = 0; i < answer.length; i++) {
+      const ans = answer[i].toUpperCase();
+      // 先尝试字母匹配（A, B, C, D...）
+      if (letterToIndex[ans] !== undefined && letterToIndex[ans] < options.length) {
+        matchArr.push(letterToIndex[ans]);
+        continue;
+      }
+      // 再尝试选项内容匹配
+      for (var j = 0; j < options.length; j++) {
+        if (answer[i] == options[j]) {
+          matchArr.push(j);
+          break;
+        }
+      }
+    }
     return matchArr;
   }, clearCurrent = (item, iframeWindow) => {
     $$1(item).find(".answerBg, .textDIV, .eidtDiv").each(function () {
@@ -1594,7 +1588,7 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
     }
   }), _sfc_main = vue.defineComponent({
     setup() {
-      const askstore = useAskStore(), { dialogVisible, count, questionList, task } = pinia$1.storeToRefs(askstore), askActiveName = vue.ref("first"), askActiveNames = vue.ref(["1"]), msg = vue.ref("<h3>本脚本仅用于学习交流，请24h内删除</h3><br><p style='color:red;'>禁止用于各种非法用途，否则后果自负</p><br><p>本脚本题库接口均来源于网络以及用户反馈添加，不对题库准确率以及可用性负责，请自行判断、评估是否使用。</p>"), formstoreObj = useformStore(), { forminput, dialogV, activeName } = pinia$1.storeToRefs(formstoreObj), ruleFormRef = vue.ref(), rules = vue.reactive({
+      const askstore = useAskStore(), { dialogVisible, count, questionList, task } = pinia$1.storeToRefs(askstore), askActiveName = vue.ref("first"), askActiveNames = vue.ref(["1"]), msg = vue.ref("<h3>本脚本仅用于学习交流，请24h内删除</h3><br><p style='color:red;'>禁止用于各种非法用途，否则后果自负</p><br><p>本脚本题库接口均来源于网络以及用户反馈添加，不对题库准确率以及可用性负责，请自行判断、评估是否使用。</p>"), formstoreObj = useformStore(), { forminput, dialogV, activeName } = pinia$1.storeToRefs(formstoreObj), ruleFormRef = vue.ref(), jumpToNum = vue.ref(""), rules = vue.reactive({
         interval: [{ required: true, message: "间隔时间不能为空" }, { type: "number", message: "间隔时间必须为数字" }, { validator: (rule, value) => value >= 1 ? Promise.resolve() : Promise.reject("间隔时间必须大于等于1") }], answerInterval: [{ required: true, message: "答题间隔不能为空" }, { type: "number", message: "答题间隔必须为数字" }, { validator: (rule, value) => value >= 1 ? Promise.resolve() : Promise.reject("答题间隔必须大于等于1") }], token: [{
           validator: (rule, value) => {
             if (value) {
@@ -1604,9 +1598,34 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
           }
         }]
       });
+      const jumpToQuestion = () => {
+        const num = parseInt(jumpToNum.value);
+        if (isNaN(num) || num < 1 || num > task.value.work.questionList.length) {
+          ElementPlus.ElMessage.warning(`请输入1-${task.value.work.questionList.length}之间的题号`);
+          return;
+        }
+        const index = num - 1;
+        // 如果是作业页面且有cxModel，强制从该题开始答题
+        if (_unsafeWindow._cxModel && task.value.name === "作业") {
+          _unsafeWindow._cxModel.jumpAndStartFrom(index);
+        } else {
+          askstore.select(index);
+        }
+        jumpToNum.value = "";
+      };
+      const loadAllAnswers = () => {
+        if (_unsafeWindow._cxModel && task.value.name === "作业") {
+          _unsafeWindow._cxModel.loadAllHomeworkAnswers();
+        }
+      };
       return {
-        count, dialogVisible, questionList, askActiveName, askActiveNames, task, msg, Aim: aim_default, handleClick: (e) => {
-          askstore.select(e);
+        count, dialogVisible, questionList, askActiveName, askActiveNames, task, msg, Aim: aim_default, jumpToNum, jumpToQuestion, loadAllAnswers, handleClick: (e) => {
+          // 如果是作业页面且有cxModel，调用loadHomeworkAnswer
+          if (_unsafeWindow._cxModel && task.value.name === "作业") {
+            _unsafeWindow._cxModel.loadHomeworkAnswer(e);
+          } else {
+            askstore.select(e);
+          }
         }, dialogV, activeName, ruleFormRef, forminput, rules, submitForm: async (formEl) => {
           formEl && await formEl.validate((valid, fields) => {
             valid && (formstoreObj.saveConfig(forminput.value), ElementPlus.ElNotification({ title: "Success", message: "配置保存成功,请自行刷新页面", type: "success" }), dialogV.value = false);
@@ -1617,7 +1636,7 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
   }), _hoisted_1 = { class: "dialog-footer" }, _hoisted_2 = { key: 0 }, _hoisted_3 = { class: "question_div" }, _hoisted_4 = { class: "question_ti" }, _hoisted_5 = { key: 0 }, _hoisted_6 = { key: 1 }, _hoisted_7 = { key: 2 }, _hoisted_8 = ["innerHTML"], _hoisted_9 = { key: 0, style: { "margin-top": "20px" } }, _hoisted_10 = { key: 1 }, _hoisted_11 = { key: 2 }, _hoisted_12 = { height: "100px" }, _hoisted_13 = ["innerHTML"];
   const Ask = _export_sfc(_sfc_main, [["render", function (_ctx, _cache, $props, $setup, $data, $options) {
     const _component_el_button = vue.resolveComponent("el-button"), _component_el_switch = vue.resolveComponent("el-switch"), _component_el_input = vue.resolveComponent("el-input"), _component_el_input_number = vue.resolveComponent("el-input-number"), _component_el_option = vue.resolveComponent("el-option"), _component_el_select = vue.resolveComponent("el-select"), _component_el_checkbox = vue.resolveComponent("el-checkbox"), _component_el_checkbox_group = vue.resolveComponent("el-checkbox-group"), _component_el_tooltip = vue.resolveComponent("el-tooltip"), _component_el_form_item = vue.resolveComponent("el-form-item"), _component_el_tab_pane = vue.resolveComponent("el-tab-pane"), _component_el_tabs = vue.resolveComponent("el-tabs"), _component_el_form = vue.resolveComponent("el-form"), _component_el_dialog = vue.resolveComponent("el-dialog"), _component_el_text = vue.resolveComponent("el-text"), _component_el_skeleton = vue.resolveComponent("el-skeleton"), _component_el_card = vue.resolveComponent("el-card"), _component_el_divider = vue.resolveComponent("el-divider"), _component_el_col = vue.resolveComponent("el-col"), _component_el_row = vue.resolveComponent("el-row"), _component_el_scrollbar = vue.resolveComponent("el-scrollbar"), _component_el_tag = vue.resolveComponent("el-tag"), _component_el_alert = vue.resolveComponent("el-alert"), _component_el_empty = vue.resolveComponent("el-empty");
-    return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [vue.createVNode(_component_el_button, { type: "danger", id: "csbutton", icon: _ctx.Setting, circle: "", onClick: _cache[0] || (_cache[0] = ($event) => _ctx.dialogV = !_ctx.dialogV) }, null, 8, ["icon"]), vue.createVNode(_component_el_dialog, { modelValue: _ctx.dialogV, "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => _ctx.dialogV = $event), title: "💯超星学习通满分助手", width: "30%", modal: false, center: "", draggable: "" }, { footer: vue.withCtx(() => [vue.createElementVNode("span", _hoisted_1, [vue.createVNode(_component_el_button, { onClick: _cache[2] || (_cache[2] = ($event) => _ctx.dialogV = false) }, { default: vue.withCtx(() => [vue.createTextVNode("取消")]), _: 1 }), vue.createVNode(_component_el_button, { type: "primary", onClick: _cache[3] || (_cache[3] = ($event) => _ctx.submitForm(_ctx.ruleFormRef)) }, { default: vue.withCtx(() => [vue.createTextVNode("保存")]), _: 1 })])]), default: vue.withCtx(() => [vue.createVNode(_component_el_form, { ref: "ruleFormRef", rules: _ctx.rules, model: _ctx.forminput, class: "demo-ruleForm" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tabs, { class: "demo-tabs", modelValue: _ctx.activeName, "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.activeName = $event) }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.userConfig, (item) => (vue.openBlock(), vue.createBlock(_component_el_tab_pane, { key: item.name, label: item.label, name: item.name }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.config, (item1) => (vue.openBlock(), vue.createBlock(_component_el_form_item, { label: item1.label, prop: item1.name }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tooltip, { class: "box-item", effect: "dark", content: item1.desc || "", placement: "top" }, { default: vue.withCtx(() => ["switch" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_switch, { key: 0, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "input" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_input, { key: 1, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "number" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_input_number, { key: 2, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "select" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_select, { key: 3, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event, placeholder: "请选择" }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item1.options, (item2) => (vue.openBlock(), vue.createBlock(_component_el_option, { key: item2.value, label: item2.label, value: item2.value }, null, 8, ["label", "value"]))), 128))]), _: 2 }, 1032, ["modelValue", "onUpdate:modelValue"])) : "checkbox" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_checkbox_group, { key: 4, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item1.options, (item2) => (vue.openBlock(), vue.createBlock(_component_el_checkbox, { key: item2.value, label: item2.value, name: item2.value }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item2.label), 1)]), _: 2 }, 1032, ["label", "name"]))), 128))]), _: 2 }, 1032, ["modelValue", "onUpdate:modelValue"])) : vue.createCommentVNode("", true)]), _: 2 }, 1032, ["content"])]), _: 2 }, 1032, ["label", "prop"]))), 256))]), _: 2 }, 1032, ["label", "name"]))), 128))]), _: 1 }, 8, ["modelValue"])]), _: 1 }, 8, ["rules", "model"])]), _: 1 }, 8, ["modelValue"]), (vue.openBlock(), vue.createBlock(vue.Teleport, { to: "body" }, [vue.createVNode(_component_el_button, { id: "zeokdjg", type: "success", plain: "", round: "", icon: _ctx.Aim, onClick: _cache[5] || (_cache[5] = ($event) => _ctx.dialogVisible = !_ctx.dialogVisible) }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString("暂未加载" == _ctx.task.name ? "等待任务加载" : "正在完成:" + _ctx.task.name), 1)]), _: 1 }, 8, ["icon"]), vue.createVNode(_component_el_dialog, { modelValue: _ctx.dialogVisible, "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => _ctx.dialogVisible = $event), width: "400px", title: "💯超星学习通满分助手", modal: false, "append-to-body": false, "lock-scroll": false, center: "", draggable: "" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_button, { style: { "margin-bottom": "20px" }, type: "primary", onClick: _cache[6] || (_cache[6] = ($event) => _ctx.dialogV = !_ctx.dialogV), plain: "" }, { default: vue.withCtx(() => [vue.createTextVNode("打开配置")]), _: 1 }), vue.createVNode(_component_el_text, { class: "mx-1", size: "large", type: "danger" }, { default: vue.withCtx(() => [vue.createTextVNode("题库秘钥配置请点击这个按钮")]), _: 1 }), vue.createVNode(_component_el_tabs, { modelValue: _ctx.askActiveName, "onUpdate:modelValue": _cache[7] || (_cache[7] = ($event) => _ctx.askActiveName = $event), class: "demo-tabs" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tab_pane, { label: "运行框", name: "first" }, { default: vue.withCtx(() => [_ctx.task.work.questionList.length > 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2, [vue.createElementVNode("div", _hoisted_3, [vue.createVNode(_component_el_card, { shadow: "hover" }, { default: vue.withCtx(() => [vue.createElementVNode("h1", _hoisted_4, [vue.createVNode(_component_el_text, { size: "large", truncated: "" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(_ctx.task.work.inx + 1 + "." + _ctx.task.work.questionList[_ctx.task.work.inx].question), 1)]), _: 1 })]), _ctx.task.work.questionList[_ctx.task.work.inx].answer ? (vue.openBlock(), vue.createElementBlock("p", _hoisted_6, [vue.createElementVNode("p", null, [vue.createElementVNode("pre", null, vue.toDisplayString(_ctx.task.work.questionList[_ctx.task.work.inx].answer), 1)])])) : (vue.openBlock(), vue.createElementBlock("p", _hoisted_5, [vue.createVNode(_component_el_skeleton, { rows: 3, animated: "" })]))]), _: 1 })]), "考试" != _ctx.task.name ? (vue.openBlock(), vue.createBlock(_component_el_divider, { key: 0 }, { default: vue.withCtx(() => [vue.createTextVNode(" 题号 ")]), _: 1 })) : vue.createCommentVNode("", true), "考试" != _ctx.task.name ? (vue.openBlock(), vue.createBlock(_component_el_scrollbar, { key: 1, height: "100px" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_row, null, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.work.questionList, (item, index) => (vue.openBlock(), vue.createBlock(_component_el_col, { span: 4, key: index }, { default: vue.withCtx(() => [vue.createVNode(_component_el_button, { type: item.status || "info", plain: "", class: "question_btn", onClick: ($event) => _ctx.handleClick(index) }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(index + 1), 1)]), _: 2 }, 1032, ["type", "onClick"])]), _: 2 }, 1024))), 128))]), _: 1 })]), _: 1 })) : vue.createCommentVNode("", true), _ctx.task.work.questionList[_ctx.task.work.inx].allAnswer ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7, [vue.createVNode(_component_el_divider, null, { default: vue.withCtx(() => [vue.createTextVNode(" 接口返回 ")]), _: 1 }), (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.work.questionList[_ctx.task.work.inx].allAnswer, (item, index) => (vue.openBlock(), vue.createElementBlock("div", { key: index, style: { "margin-bottom": "15px", "padding": "10px", "border": "1px solid #dcdfe6", "border-radius": "4px" } }, [vue.createVNode(_component_el_text, { size: "default", type: "primary", style: { "font-weight": "bold" } }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.form), 1)]), _: 2 }, 1024), vue.createElementVNode("div", { innerHTML: item.answer || "暂无答案" }, null, 8, _hoisted_8), null != item.num ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9, [vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "info" }, { default: vue.withCtx(() => [vue.createTextVNode("已用次数:" + vue.toDisplayString(item.usenum), 1)]), _: 2 }, 1024)]), vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "success" }, { default: vue.withCtx(() => [vue.createTextVNode("剩余次数:" + vue.toDisplayString(item.num), 1)]), _: 2 }, 1024)])])) : item.metadata ? (vue.openBlock(), vue.createElementBlock("div", { key: 3, style: { "margin-top": "10px" } }, [vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "warning" }, { default: vue.withCtx(() => [vue.createTextVNode("Token:" + vue.toDisplayString(item.metadata.totalTokens || 0), 1)]), _: 2 }, 1024)]), item.metadata.model ? vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "info" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.metadata.model), 1)]), _: 2 }, 1024)]) : vue.createCommentVNode("", true), vue.createElementVNode("div", { style: { "margin-top": "5px", "font-size": "11px", "color": "#909399", "word-break": "break-all", "max-height": "100px", "overflow": "auto" } }, vue.toDisplayString(item.metadata.rawResponse || ""), 1)])) : vue.createCommentVNode("", true)], 2112))), 256))])) : vue.createCommentVNode("", true)])) : _ctx.task.video.status ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_10, [vue.createVNode(_component_el_alert, { title: "倍速有风险，挂科两行泪", type: "error", center: "", "show-icon": "" }), vue.createVNode(_component_el_text, { class: "mx-1", size: "large", type: "danger" }, { default: vue.withCtx(() => [vue.createTextVNode(" 正在完成视频任务 ")]), _: 1 })])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_11, [vue.createElementVNode("div", _hoisted_12, [vue.createVNode(_component_el_empty, { description: _ctx.task.name }, null, 8, ["description"])])]))]), _: 1 }), vue.createVNode(_component_el_tab_pane, { label: "运行日志", name: "second" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_scrollbar, { height: "200px" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_row, null, { default: vue.withCtx(() => [vue.createVNode(_component_el_col, { span: 24 }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.log, (item, index) => (vue.openBlock(), vue.createElementBlock("p", { key: index, class: "cx_log" }, [vue.createVNode(_component_el_text, { size: "small", type: "info", class: "mx-1" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.time), 1)]), _: 2 }, 1024), vue.createVNode(_component_el_text, { class: "mx-1", type: "info" == item.type ? "" : item.type }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(" " + item.msg), 1)]), _: 2 }, 1032, ["type"])]))), 128))]), _: 1 })]), _: 1 })]), _: 1 })]), _: 1 }), vue.createVNode(_component_el_tab_pane, { label: "公告", name: "msg" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_card, { shadow: "hover" }, { default: vue.withCtx(() => [vue.createElementVNode("div", { innerHTML: _ctx.msg }, null, 8, _hoisted_13)]), _: 1 })]), _: 1 })]), _: 1 }, 8, ["modelValue"]), vue.createElementVNode("p", null, [_ctx.task.status ? (vue.openBlock(), vue.createBlock(_component_el_tag, { key: 0 }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(_ctx.task.status), 1)]), _: 1 })) : vue.createCommentVNode("", true)])]), _: 1 }, 8, ["modelValue"])]))], 64);
+    return vue.openBlock(), vue.createElementBlock(vue.Fragment, null, [vue.createVNode(_component_el_button, { type: "danger", id: "csbutton", icon: _ctx.Setting, circle: "", onClick: _cache[0] || (_cache[0] = ($event) => _ctx.dialogV = !_ctx.dialogV) }, null, 8, ["icon"]), vue.createVNode(_component_el_dialog, { modelValue: _ctx.dialogV, "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => _ctx.dialogV = $event), title: "💯超星学习通满分助手", width: "30%", modal: false, center: "", draggable: "" }, { footer: vue.withCtx(() => [vue.createElementVNode("span", _hoisted_1, [vue.createVNode(_component_el_button, { onClick: _cache[2] || (_cache[2] = ($event) => _ctx.dialogV = false) }, { default: vue.withCtx(() => [vue.createTextVNode("取消")]), _: 1 }), vue.createVNode(_component_el_button, { type: "primary", onClick: _cache[3] || (_cache[3] = ($event) => _ctx.submitForm(_ctx.ruleFormRef)) }, { default: vue.withCtx(() => [vue.createTextVNode("保存")]), _: 1 })])]), default: vue.withCtx(() => [vue.createVNode(_component_el_form, { ref: "ruleFormRef", rules: _ctx.rules, model: _ctx.forminput, class: "demo-ruleForm" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tabs, { class: "demo-tabs", modelValue: _ctx.activeName, "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => _ctx.activeName = $event) }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.userConfig, (item) => (vue.openBlock(), vue.createBlock(_component_el_tab_pane, { key: item.name, label: item.label, name: item.name }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item.config, (item1) => (vue.openBlock(), vue.createBlock(_component_el_form_item, { label: item1.label, prop: item1.name }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tooltip, { class: "box-item", effect: "dark", content: item1.desc || "", placement: "top" }, { default: vue.withCtx(() => ["switch" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_switch, { key: 0, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "input" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_input, { key: 1, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "number" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_input_number, { key: 2, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, null, 8, ["modelValue", "onUpdate:modelValue"])) : "select" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_select, { key: 3, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event, placeholder: "请选择" }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item1.options, (item2) => (vue.openBlock(), vue.createBlock(_component_el_option, { key: item2.value, label: item2.label, value: item2.value }, null, 8, ["label", "value"]))), 128))]), _: 2 }, 1032, ["modelValue", "onUpdate:modelValue"])) : "checkbox" === item1.type ? (vue.openBlock(), vue.createBlock(_component_el_checkbox_group, { key: 4, modelValue: _ctx.forminput[item1.name], "onUpdate:modelValue": ($event) => _ctx.forminput[item1.name] = $event }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(item1.options, (item2) => (vue.openBlock(), vue.createBlock(_component_el_checkbox, { key: item2.value, label: item2.value, name: item2.value }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item2.label), 1)]), _: 2 }, 1032, ["label", "name"]))), 128))]), _: 2 }, 1032, ["modelValue", "onUpdate:modelValue"])) : vue.createCommentVNode("", true)]), _: 2 }, 1032, ["content"])]), _: 2 }, 1032, ["label", "prop"]))), 256))]), _: 2 }, 1032, ["label", "name"]))), 128))]), _: 1 }, 8, ["modelValue"])]), _: 1 }, 8, ["rules", "model"])]), _: 1 }, 8, ["modelValue"]), (vue.openBlock(), vue.createBlock(vue.Teleport, { to: "body" }, [vue.createVNode(_component_el_button, { id: "zeokdjg", type: "success", plain: "", round: "", icon: _ctx.Aim, onClick: _cache[5] || (_cache[5] = ($event) => _ctx.dialogVisible = !_ctx.dialogVisible) }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString("暂未加载" == _ctx.task.name ? "等待任务加载" : "正在完成:" + _ctx.task.name), 1)]), _: 1 }, 8, ["icon"]), vue.createVNode(_component_el_dialog, { modelValue: _ctx.dialogVisible, "onUpdate:modelValue": _cache[8] || (_cache[8] = ($event) => _ctx.dialogVisible = $event), width: "400px", title: "💯超星学习通满分助手", modal: false, "append-to-body": false, "lock-scroll": false, center: "", draggable: "" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_button, { style: { "margin-bottom": "20px" }, type: "primary", onClick: _cache[6] || (_cache[6] = ($event) => _ctx.dialogV = !_ctx.dialogV), plain: "" }, { default: vue.withCtx(() => [vue.createTextVNode("打开配置")]), _: 1 }), vue.createVNode(_component_el_text, { class: "mx-1", size: "large", type: "danger" }, { default: vue.withCtx(() => [vue.createTextVNode("题库秘钥配置请点击这个按钮")]), _: 1 }), vue.createVNode(_component_el_tabs, { modelValue: _ctx.askActiveName, "onUpdate:modelValue": _cache[7] || (_cache[7] = ($event) => _ctx.askActiveName = $event), class: "demo-tabs" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_tab_pane, { label: "运行框", name: "first" }, { default: vue.withCtx(() => [_ctx.task.work.questionList.length > 0 ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_2, [vue.createElementVNode("div", _hoisted_3, [vue.createVNode(_component_el_card, { shadow: "hover" }, { default: vue.withCtx(() => [vue.createElementVNode("h1", _hoisted_4, [vue.createVNode(_component_el_text, { size: "large", truncated: "" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(_ctx.task.work.inx + 1 + "." + _ctx.task.work.questionList[_ctx.task.work.inx].question), 1)]), _: 1 })]), _ctx.task.work.questionList[_ctx.task.work.inx].answer ? (vue.openBlock(), vue.createElementBlock("p", _hoisted_6, [vue.createElementVNode("p", null, [vue.createElementVNode("pre", null, vue.toDisplayString(_ctx.task.work.questionList[_ctx.task.work.inx].answer), 1)])])) : (vue.openBlock(), vue.createElementBlock("p", _hoisted_5, [vue.createVNode(_component_el_skeleton, { rows: 3, animated: "" })]))]), _: 1 })]), "考试" != _ctx.task.name ? (vue.openBlock(), vue.createBlock(_component_el_divider, { key: 0 }, { default: vue.withCtx(() => [vue.createTextVNode(" 题号 (点击跳转) ")]), _: 1 })) : vue.createCommentVNode("", true), "考试" != _ctx.task.name ? (vue.openBlock(), vue.createElementBlock("div", { key: 1, style: { "margin-bottom": "10px", "display": "flex", "align-items": "center", "gap": "10px" } }, [vue.createVNode(_component_el_input, { modelValue: _ctx.jumpToNum, "onUpdate:modelValue": _cache[9] || (_cache[9] = ($event) => _ctx.jumpToNum = $event), placeholder: "输入题号", style: { "width": "80px" }, size: "small", onKeyup: vue.withKeys(_ctx.jumpToQuestion, ["enter"]) }, null, 8, ["modelValue", "onKeyup"]), vue.createVNode(_component_el_button, { type: "primary", size: "small", onClick: _ctx.jumpToQuestion }, { default: vue.withCtx(() => [vue.createTextVNode("跳转")]), _: 1 }, 8, ["onClick"]), vue.createVNode(_component_el_text, { size: "small", type: "info" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString("共" + _ctx.task.work.questionList.length + "题"), 1)]), _: 1 })])) : vue.createCommentVNode("", true), "考试" != _ctx.task.name ? (vue.openBlock(), vue.createBlock(_component_el_scrollbar, { key: 2, height: "100px" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_row, null, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.work.questionList, (item, index) => (vue.openBlock(), vue.createBlock(_component_el_col, { span: 4, key: index }, { default: vue.withCtx(() => [vue.createVNode(_component_el_button, { type: item.status || "info", plain: "", class: "question_btn", onClick: ($event) => _ctx.handleClick(index) }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(index + 1), 1)]), _: 2 }, 1032, ["type", "onClick"])]), _: 2 }, 1024))), 128))]), _: 1 })]), _: 1 })) : vue.createCommentVNode("", true), _ctx.task.work.questionList[_ctx.task.work.inx].allAnswer ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_7, [vue.createVNode(_component_el_divider, null, { default: vue.withCtx(() => [vue.createTextVNode(" 接口返回 ")]), _: 1 }), (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.work.questionList[_ctx.task.work.inx].allAnswer, (item, index) => (vue.openBlock(), vue.createElementBlock("div", { key: index, style: { "margin-bottom": "15px", "padding": "10px", "border": "1px solid #dcdfe6", "border-radius": "4px" } }, [vue.createVNode(_component_el_text, { size: "default", type: "primary", style: { "font-weight": "bold" } }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.form), 1)]), _: 2 }, 1024), vue.createElementVNode("div", { innerHTML: item.answer || "暂无答案" }, null, 8, _hoisted_8), null != item.num ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_9, [vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "info" }, { default: vue.withCtx(() => [vue.createTextVNode("已用次数:" + vue.toDisplayString(item.usenum), 1)]), _: 2 }, 1024)]), vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "success" }, { default: vue.withCtx(() => [vue.createTextVNode("剩余次数:" + vue.toDisplayString(item.num), 1)]), _: 2 }, 1024)])])) : item.metadata ? (vue.openBlock(), vue.createElementBlock("div", { key: 3, style: { "margin-top": "10px" } }, [vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "warning" }, { default: vue.withCtx(() => [vue.createTextVNode("Token:" + vue.toDisplayString(item.metadata.totalTokens || 0), 1)]), _: 2 }, 1024)]), item.metadata.model ? vue.createElementVNode("div", null, [vue.createVNode(_component_el_tag, { class: "ml-2", type: "info" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.metadata.model), 1)]), _: 2 }, 1024)]) : vue.createCommentVNode("", true), vue.createElementVNode("div", { style: { "margin-top": "5px", "font-size": "11px", "color": "#909399", "word-break": "break-all", "max-height": "100px", "overflow": "auto" } }, vue.toDisplayString(item.metadata.rawResponse || ""), 1)])) : vue.createCommentVNode("", true)], 2112))), 256))])) : vue.createCommentVNode("", true)])) : _ctx.task.video.status ? (vue.openBlock(), vue.createElementBlock("div", _hoisted_10, [vue.createVNode(_component_el_alert, { title: "倍速有风险，挂科两行泪", type: "error", center: "", "show-icon": "" }), vue.createVNode(_component_el_text, { class: "mx-1", size: "large", type: "danger" }, { default: vue.withCtx(() => [vue.createTextVNode(" 正在完成视频任务 ")]), _: 1 })])) : (vue.openBlock(), vue.createElementBlock("div", _hoisted_11, [vue.createElementVNode("div", _hoisted_12, [vue.createVNode(_component_el_empty, { description: _ctx.task.name }, null, 8, ["description"])])]))]), _: 1 }), vue.createVNode(_component_el_tab_pane, { label: "运行日志", name: "second" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_scrollbar, { height: "200px" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_row, null, { default: vue.withCtx(() => [vue.createVNode(_component_el_col, { span: 24 }, { default: vue.withCtx(() => [(vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(_ctx.task.log, (item, index) => (vue.openBlock(), vue.createElementBlock("p", { key: index, class: "cx_log" }, [vue.createVNode(_component_el_text, { size: "small", type: "info", class: "mx-1" }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(item.time), 1)]), _: 2 }, 1024), vue.createVNode(_component_el_text, { class: "mx-1", type: "info" == item.type ? "" : item.type }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(" " + item.msg), 1)]), _: 2 }, 1032, ["type"])]))), 128))]), _: 1 })]), _: 1 })]), _: 1 })]), _: 1 }), vue.createVNode(_component_el_tab_pane, { label: "公告", name: "msg" }, { default: vue.withCtx(() => [vue.createVNode(_component_el_card, { shadow: "hover" }, { default: vue.withCtx(() => [vue.createElementVNode("div", { innerHTML: _ctx.msg }, null, 8, _hoisted_13)]), _: 1 })]), _: 1 })]), _: 1 }, 8, ["modelValue"]), vue.createElementVNode("p", null, [_ctx.task.status ? (vue.openBlock(), vue.createBlock(_component_el_tag, { key: 0 }, { default: vue.withCtx(() => [vue.createTextVNode(vue.toDisplayString(_ctx.task.status), 1)]), _: 1 })) : vue.createCommentVNode("", true)])]), _: 1 }, 8, ["modelValue"])]))], 64);
   }], ["__scopeId", "data-v-c3c6b09f"]]);
   class Cx {
     constructor() {
@@ -1692,11 +1711,39 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
           let data = await getAnswers(ques[i], iframeWindow);
           this.askStore.get(i).allAnswer = data;
           let tmp = fillAnswer(data, ques[i], Timu[i], iframeWindow);
-          tmp ? (this.askStore.get(i).status = "primary", this.askStore.get(i).answer = tmp, succ++) : (this.askStore.get(i).status = "danger", this.askStore.get(i).answer = "暂无答案"), this.askStore.get(i).dom = Timu[i];
+          if (tmp && tmp.error) {
+            this.askStore.get(i).status = "danger";
+            this.askStore.get(i).answer = tmp.error;
+          } else if (tmp) {
+            this.askStore.get(i).status = "primary";
+            this.askStore.get(i).answer = tmp;
+            succ++;
+          } else {
+            this.askStore.get(i).status = "danger";
+            this.askStore.get(i).answer = "暂无答案";
+          }
+          this.askStore.get(i).dom = Timu[i];
         }
-        this.defaultConfig.autoSubmit ? (succ / ques.length < this.defaultConfig.minAccuracy ? (this.askStore.log("章节测验正确率不足，暂存", "error"), iframeWindow.alert = function (e) {
-          console.log("alert 方法被阻止", e);
-        }, iframeWindow.noSubmit()) : (iframeWindow.btnBlueSubmit(), await sleep(3), iframeWindow.submitCheckTimes(), this.askStore.log("章节测验已完成", "success")), this.askStore.task.status = `章节测验已完成，等待切换,正确率:${succ}/${ques.length}`, resolve()) : (this.askStore.log("已完成答题，未开启自动提交，等待手动提交中", "success"), this.askStore.task.status = `正在等待手动提交,正确率:${succ}/${ques.length}`);
+        if (this.defaultConfig.autoSubmit) {
+          if (succ / ques.length < this.defaultConfig.minAccuracy) {
+            this.askStore.log("章节测验正确率不足，暂存", "error");
+            iframeWindow.alert = function (e) {
+              console.log("alert 方法被阻止", e);
+            };
+            iframeWindow.noSubmit();
+          } else {
+            iframeWindow.btnBlueSubmit();
+            await sleep(3);
+            iframeWindow.submitCheckTimes();
+            this.askStore.log("章节测验已完成", "success");
+          }
+          this.askStore.task.status = `章节测验已完成，等待切换,正确率:${succ}/${ques.length}`;
+          resolve();
+        } else {
+          this.askStore.log("已完成答题，未开启自动提交，等待手动提交中", "success");
+          this.askStore.task.status = `正在等待手动提交,正确率:${succ}/${ques.length}`;
+          resolve();
+        }
       });
     }
     homework() {
@@ -1719,14 +1766,157 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
           ques.push(data);
         }
         this.askStore.reset(), this.askStore.count = ques.length, this.askStore.task.name = "作业";
+        // 保存题目数据和DOM引用供后续使用
+        this.homeworkData = { ques, Timu };
+        this.isAnswering = false; // 答题锁
+        this.stopAnswering = false; // 停止答题标志
+        // 先加载所有题目到UI（不获取答案）
         for (let i = 0; i < ques.length; i++) {
-          await sleep(this.defaultConfig.answerInterval), this.askStore.insert(ques[i]), this.askStore.task.work.inx = i;
-          let data = await getAnswers(ques[i]);
-          this.askStore.get(i).allAnswer = data;
-          let tmp = fillAnswer(data, ques[i], Timu[i], _unsafeWindow);
-          tmp ? (this.askStore.get(i).status = "primary", this.askStore.get(i).answer = tmp) : (this.askStore.get(i).status = "danger", this.askStore.get(i).answer = "暂无答案"), this.askStore.get(i).dom = Timu[i];
+          this.askStore.insert({
+            ...ques[i],
+            status: "info",
+            answer: "点击题号获取答案",
+            dom: Timu[i],
+            loaded: false
+          });
         }
+        this.askStore.log(`已加载全部 ${ques.length} 道题目，开始自动答题...`, "success");
+        this.askStore.task.status = `共${ques.length}题，正在答题中...`;
+        resolve();
+        // 自动开始从第1题答题
+        this.loadHomeworkAnswer(0);
       });
+    }
+    async loadHomeworkAnswer(index, continueFromHere = true) {
+      if (!this.homeworkData) return;
+
+      // 如果正在答题，只切换显示，不启动新的答题流程
+      if (this.isAnswering) {
+        this.askStore.task.work.inx = index;
+        try {
+          this.homeworkData.Timu[index].scrollIntoView({ block: "center" });
+        } catch (e) {
+          log(e, "error");
+        }
+        this.askStore.log(`正在答题中，已跳转到第 ${index + 1} 题查看`, "info");
+        return;
+      }
+
+      this.isAnswering = true;
+      const { ques, Timu } = this.homeworkData;
+
+      // 如果该题未加载，先加载当前题
+      if (!this.askStore.get(index).loaded) {
+        this.askStore.task.work.inx = index;
+        this.askStore.get(index).status = "warning";
+        this.askStore.get(index).answer = "正在获取答案...";
+        // 先滚动到当前题目
+        try {
+          Timu[index].scrollIntoView({ block: "center" });
+        } catch (e) {
+          log(e, "error");
+        }
+        this.askStore.log(`正在获取第 ${index + 1} 题答案...`, "info");
+        let data = await getAnswers(ques[index]);
+        this.askStore.get(index).allAnswer = data;
+        let tmp = fillAnswer(data, ques[index], Timu[index], _unsafeWindow);
+        if (tmp && tmp.error) {
+          this.askStore.get(index).status = "danger";
+          this.askStore.get(index).answer = tmp.error;
+        } else if (tmp) {
+          this.askStore.get(index).status = "primary";
+          this.askStore.get(index).answer = tmp;
+        } else {
+          this.askStore.get(index).status = "danger";
+          this.askStore.get(index).answer = "暂无答案";
+        }
+        this.askStore.get(index).loaded = true;
+        this.askStore.log(`第 ${index + 1} 题答案获取完成`, "success");
+      } else {
+        // 已加载过，直接滚动
+        this.askStore.task.work.inx = index;
+        try {
+          Timu[index].scrollIntoView({ block: "center" });
+        } catch (e) {
+          log(e, "error");
+        }
+      }
+
+      // 从当前题目的下一题继续答题
+      if (continueFromHere && index + 1 < ques.length) {
+        await sleep(this.defaultConfig.answerInterval);
+        await this.continueHomeworkFrom(index + 1);
+      }
+
+      this.isAnswering = false;
+    }
+    async jumpAndStartFrom(index) {
+      if (!this.homeworkData) return;
+      // 停止当前答题
+      this.stopAnswering = true;
+      // 等待当前答题停止
+      while (this.isAnswering) {
+        await sleep(0.1);
+      }
+      this.stopAnswering = false;
+      // 从指定题目开始答题
+      this.askStore.log(`跳转到第 ${index + 1} 题并开始答题`, "info");
+      await this.loadHomeworkAnswer(index, true);
+    }
+    async continueHomeworkFrom(startIndex) {
+      if (!this.homeworkData) return;
+      const { ques, Timu } = this.homeworkData;
+
+      for (let i = startIndex; i < ques.length; i++) {
+        // 检查是否需要停止答题
+        if (this.stopAnswering) {
+          this.askStore.log(`答题已中断，将从第 ${i + 1} 题重新开始`, "info");
+          return;
+        }
+        if (this.askStore.get(i).loaded) continue;
+        this.askStore.task.work.inx = i;
+        this.askStore.get(i).status = "warning";
+        this.askStore.get(i).answer = "正在获取答案...";
+        // 先滚动到当前题目
+        try {
+          Timu[i].scrollIntoView({ block: "center" });
+        } catch (e) {
+          log(e, "error");
+        }
+        this.askStore.log(`正在获取第 ${i + 1} 题答案...`, "info");
+        let data = await getAnswers(ques[i]);
+        this.askStore.get(i).allAnswer = data;
+        let tmp = fillAnswer(data, ques[i], Timu[i], _unsafeWindow);
+        if (tmp && tmp.error) {
+          this.askStore.get(i).status = "danger";
+          this.askStore.get(i).answer = tmp.error;
+        } else if (tmp) {
+          this.askStore.get(i).status = "primary";
+          this.askStore.get(i).answer = tmp;
+        } else {
+          this.askStore.get(i).status = "danger";
+          this.askStore.get(i).answer = "暂无答案";
+        }
+        this.askStore.get(i).loaded = true;
+        this.askStore.log(`第 ${i + 1} 题答案获取完成`, "success");
+        // 答完一题后等待间隔再继续下一题
+        if (i + 1 < ques.length) {
+          await sleep(this.defaultConfig.answerInterval);
+        }
+      }
+      this.askStore.log(`全部题目答案获取完成`, "success");
+    }
+    async loadAllHomeworkAnswers() {
+      if (!this.homeworkData) return;
+      if (this.isAnswering) {
+        this.askStore.log(`正在答题中，请等待完成`, "warning");
+        return;
+      }
+      const { ques } = this.homeworkData;
+      this.isAnswering = true;
+      this.askStore.log(`开始批量获取全部 ${ques.length} 道题目答案...`, "info");
+      await this.continueHomeworkFrom(0);
+      this.isAnswering = false;
     }
     exam() {
       return new Promise(async (resolve) => {
@@ -1736,12 +1926,29 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
         let data1 = await getAnswers(data);
         this.askStore.get(0).allAnswer = data1;
         let tmp = fillAnswer(data1, data, document.getElementsByClassName("mark_table")[0], _unsafeWindow);
-        if (tmp ? (this.askStore.get(0).status = "primary", this.askStore.get(0).answer = tmp) : (this.askStore.get(0).status = "danger", this.askStore.get(0).answer = "暂无答案"), this.defaultConfig.autoExam) {
+        if (tmp && tmp.error) {
+          this.askStore.get(0).status = "danger";
+          this.askStore.get(0).answer = tmp.error;
+        } else if (tmp) {
+          this.askStore.get(0).status = "primary";
+          this.askStore.get(0).answer = tmp;
+        } else {
+          this.askStore.get(0).status = "danger";
+          this.askStore.get(0).answer = "暂无答案";
+        }
+        if (this.defaultConfig.autoExam) {
           await sleep(this.defaultConfig.answerInterval);
           const nextButton = $('.nextDiv .jb_btn:contains("下一题")');
-          nextButton ? nextButton.click() : (this.askStore.log("已完成答题，请自行检查答案填写后自行提交", "success"), this.askStore.task.status = "已完成答题，请自行检查答案填写后自行提交");
-        } else
+          if (nextButton.length) {
+            nextButton.click();
+          } else {
+            this.askStore.log("已完成答题，请自行检查答案填写后自行提交", "success");
+            this.askStore.task.status = "已完成答题，请自行检查答案填写后自行提交";
+          }
+        } else {
           this.askStore.task.status = "未开启自动切换，等待手动切换";
+        }
+        resolve();
       });
     }
     pdf(iframeWindow) {
@@ -1903,6 +2110,7 @@ ${questionData.options && questionData.options.length > 0 ? "\n【选项】\n" +
     case "/mooc-ans/mooc2/work/dowork":
     case "/mooc2-ans/mooc2/work/dowork":
       const cxModel1 = new Cx();
+      _unsafeWindow._cxModel = cxModel1; // 暴露到全局供UI调用
       cxModel1.askStore.log("脚本初始化成功！", "success"), await (cxModel1.homework());
       break;
     case "/exam-ans/exam/test/reVersionTestStartNew":
