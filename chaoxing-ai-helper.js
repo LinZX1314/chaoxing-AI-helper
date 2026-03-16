@@ -2,7 +2,7 @@
 // @name         💯【超星学习通满分助手-AI版】
 // @namespace    askAuto
 // @author       Linzx1314(原作者: shushoujiu)
-// @version      2.2.7
+// @version      2.2.8
 // @description  💯超星学习通满分助手AI版，挂机解放时间，无需任何操作自动完成所有任务点。支持本地AI回答所有题型，包括简答题、名词解释、论述题、计算题等。
 // @icon         https://vitejs.dev/logo.svg
 // @match        *://*.chaoxing.com/*
@@ -21,7 +21,6 @@
 // @resource     element-plus  https://cdn.staticfile.org/element-plus/2.3.12/index.css
 // @resource     ttf           https://www.forestpolice.org/ttf/2.0/table.json
 // @connect      127.0.0.1
-// @connect      npi.linzzx.top
 // @connect      localhost
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
