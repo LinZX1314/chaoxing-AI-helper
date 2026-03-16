@@ -21,10 +21,8 @@
 // @resource     element-plus  https://cdn.staticfile.org/element-plus/2.3.12/index.css
 // @resource     ttf           https://www.forestpolice.org/ttf/2.0/table.json
 // @connect      127.0.0.1
-// @connect      open.bigmodel.cn
-// @connect      localhost
-// @connect      124.221.162.69
 // @connect      npi.linzzx.top
+// @connect      localhost
 // @grant        GM_addStyle
 // @grant        GM_getResourceText
 // @grant        GM_getValue
@@ -2129,8 +2127,46 @@ ${(() => {
           retryCount++;
         }
         if (jobList.length === 0) {
-          cxModel.askStore.log("当前章节没有任务点", "info");
-          return;
+          cxModel.askStore.log("当前卡片没有任务点，尝试切换到下一卡片...", "info");
+          // 尝试切换到下一个卡片
+          const win = top;
+          try {
+            const activeCard = win.document.querySelector(".prev_ul li.active");
+            if (activeCard) {
+              const match = activeCard.id.match(/dct(\d+)/);
+              if (match) {
+                const currentNum = parseInt(match[1]);
+                const totalCards = win.document.querySelectorAll(".prev_ul li").length;
+                if (currentNum < totalCards) {
+                  // 获取参数并切换
+                  const chapterId = win.document.getElementById("chapterIdid")?.value || win.document.getElementById("chapterId")?.value;
+                  const courseId = win.document.getElementById("curCourseId")?.value;
+                  const clazzid = win.document.getElementById("curClazzId")?.value;
+                  if (chapterId && courseId && clazzid) {
+                    win.changeDisplayContent(currentNum + 1, totalCards, chapterId, courseId, clazzid, '');
+                    cxModel.askStore.log("已切换卡片，3秒后重新检测...", "info");
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    // 重新检测任务点
+                    const newJobList = _self1.document.querySelectorAll(".ans-job-icon") || [];
+                    if (newJobList.length > 0) {
+                      cxModel.askStore.log("检测到任务点，开始执行", "success");
+                      jobList = newJobList;
+                    } else {
+                      cxModel.askStore.log("切换后仍无任务点", "info");
+                      return;
+                    }
+                  }
+                } else {
+                  cxModel.askStore.log("当前章节没有任务点", "info");
+                  return;
+                }
+              }
+            }
+          } catch (e) {
+            console.error("切换卡片失败:", e);
+            cxModel.askStore.log("当前章节没有任务点", "info");
+            return;
+          }
         }
         for (let i = 0; i < jobList.length; i++) {
           const item = jobList[i];
@@ -2166,7 +2202,48 @@ ${(() => {
               (iframe == null ? void 0 : iframe.src.match(/\/ananas\/modules\/pdf\/index.html/)) ? (log("文档", "error"), iframe && (await waitIframeLoaded(iframe), await cxModel.pdf(iframe.contentWindow), cxModel.askStore.log("pdf任务已完成", "success"))) : (console.log(iframe == null ? void 0 : iframe.src, "未知"), cxModel.askStore.log("未知任务跳过", "success"));
           }
         }
-        await sleep(formStore.forminput.interval), !formStore.forminput.autoJump && cxModel.askStore.msg("由于未开启自动切换,请手动切换"), formStore.forminput.autoJump && (top == null ? void 0 : top.document.querySelector(".nextChapter").click());
+        await sleep(formStore.forminput.interval);
+        if (!formStore.forminput.autoJump) {
+            cxModel.askStore.msg("由于未开启自动切换,请手动切换");
+        } else {
+            // 在 iframe 中查找下一节按钮
+            const win = _self1;
+            // 查找下一节按钮，支持多种选择器
+            const nextBtn = win == null ? void 0 : (win.document.querySelector(".nextChapter") || win.document.querySelector("#prevNextFocusNext") || win.document.querySelector("button.nextChapter") || win.document.querySelector(".jb_btn.next") || top.document.querySelector("#prevNextFocusNext"));
+            if (nextBtn && nextBtn.offsetParent !== null) {
+                // 按钮可见，点击它
+                nextBtn.click();
+            } else {
+                // 按钮不可见（学习目标等非任务点卡片），直接调用切换函数
+                try {
+                    const activeCard = win.document.querySelector(".prev_ul li.active");
+                    if (activeCard) {
+                        const match = activeCard.id.match(/dct(\d+)/);
+                        if (match) {
+                            const currentNum = parseInt(match[1]);
+                            const totalCards = win.document.querySelectorAll(".prev_ul li").length;
+                            if (currentNum < totalCards && typeof win.changeDisplayContent === "function") {
+                                // 从页面隐藏字段获取参数
+                                const chapterId = win.document.getElementById("chapterIdid")?.value || win.document.getElementById("chapterId")?.value;
+                                const courseId = win.document.getElementById("curCourseId")?.value;
+                                const clazzid = win.document.getElementById("curClazzId")?.value;
+                                if (chapterId && courseId && clazzid) {
+                                    win.changeDisplayContent(currentNum + 1, totalCards, chapterId, courseId, clazzid, '');
+                                    cxModel.askStore.log("已切换到下一卡片", "info");
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("切换卡片失败:", e);
+                }
+            }
+        }
+        // 执行完任务后，延时并再次检测新任务（主循环）
+        cxModel.askStore.log("等待任务加载中...", "info");
+        await sleep(formStore.forminput.interval);
+        // 再次调用 startWork 检测新任务
+        startWork();
       };
       setInterval(async () => {
         await waitElementLoaded(_self, "#iframe");
